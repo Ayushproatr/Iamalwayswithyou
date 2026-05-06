@@ -7,13 +7,11 @@
 
 <style>
 *{box-sizing:border-box}
-
 body{
 margin:0;
-font-family:'Poppins',sans-serif;
+font-family:sans-serif;
 overflow:hidden;
 background:linear-gradient(135deg,#fbeaff,#e6f0ff);
-color:#444;
 }
 
 /* slides */
@@ -27,82 +25,35 @@ justify-content:center;
 align-items:center;
 text-align:center;
 padding:20px;
-transition:0.7s;
+transition:0.6s;
 }
 .hidden{opacity:0;pointer-events:none}
-
-/* name */
-.name{
-font-size:30px;
-background:linear-gradient(90deg,#ff9de6,#caa6ff,#8fd3ff);
--webkit-background-clip:text;
-color:transparent;
-cursor:pointer;
-}
-.name.glow{
-text-shadow:0 0 25px #ffb3ec;
-}
 
 /* buttons */
 button{
 padding:12px 20px;
 border:none;
-border-radius:30px;
-background:linear-gradient(135deg,#caa6ff,#8fd3ff);
+border-radius:25px;
+background:#caa6ff;
 color:white;
 margin:8px;
-font-size:14px;
 }
 
 /* breathing */
 .breath{
 width:100px;height:100px;
 border-radius:50%;
-background:radial-gradient(circle,#caa6ff,#8fd3ff);
+background:#caa6ff;
 animation:breathe 5s infinite;
 }
 @keyframes breathe{
 0%{transform:scale(1)}
-50%{transform:scale(1.7)}
+50%{transform:scale(1.6)}
 100%{transform:scale(1)}
 }
 
-/* chat */
-#chatBox{
-width:100%;
-max-width:360px;
-height:60vh;
-background:rgba(255,255,255,0.4);
-border-radius:20px;
-padding:10px;
-overflow:auto;
-display:flex;
-flex-direction:column;
-gap:8px;
-}
-
-.msg{
-padding:10px;
-border-radius:15px;
-max-width:75%;
-font-size:14px;
-}
-.me{background:#caa6ff;color:white;align-self:flex-end}
-.her{background:white;align-self:flex-start}
-
-/* voice name */
-#voiceName{
-opacity:0;
-transition:1s;
-}
-#voiceName.show{
-opacity:1;
-}
-
 /* blur */
-.blur-bg{
-filter:blur(6px) brightness(0.7);
-}
+.blur-bg{filter:blur(6px) brightness(0.7)}
 
 /* overlay */
 #focusOverlay{
@@ -112,12 +63,26 @@ width:100%;height:100%;
 display:none;
 justify-content:center;
 align-items:center;
-flex-direction:column;
 background:rgba(0,0,0,0.3);
 color:white;
 z-index:999;
 }
 #focusOverlay.active{display:flex}
+
+/* chat */
+#chatBox{
+width:100%;max-width:360px;height:60vh;
+background:white;
+border-radius:20px;
+padding:10px;
+overflow:auto;
+display:flex;
+flex-direction:column;
+gap:8px;
+}
+.msg{padding:10px;border-radius:12px;max-width:75%}
+.me{background:#caa6ff;color:white;align-self:flex-end}
+.her{background:#eee}
 
 /* hearts */
 .heart{
@@ -129,52 +94,20 @@ animation:float 6s linear infinite;
 0%{transform:translateY(100vh)}
 100%{transform:translateY(-10vh)}
 }
-
-/* popup */
-.popup{
-position:absolute;
-background:white;
-padding:20px;
-border-radius:15px;
-display:none;
-}
-
-/* particles */
-.particle{
-position:absolute;
-width:5px;height:5px;
-background:white;
-border-radius:50%;
-opacity:0.6;
-animation:float 8s linear infinite;
-}
 </style>
 </head>
 
 <body>
 
-<!-- particles -->
-<script>
-setInterval(()=>{
-let p=document.createElement("div");
-p.className="particle";
-p.style.left=Math.random()*100+"vw";
-document.body.appendChild(p);
-setTimeout(()=>p.remove(),8000);
-},300);
-</script>
-
-<audio id="voice">
-<source src="ayush.mp3">
+<audio id="voice" preload="auto">
+<source src="ayush.mp3" type="audio/mpeg">
 </audio>
 
-<div id="focusOverlay">
-<h2>I’m here… just breathe 🤍</h2>
-</div>
+<div id="focusOverlay">Just listen… 🤍</div>
 
 <!-- S1 -->
 <div id="s1" class="slide">
-<h1>Hey <span class="name" onclick="glow(this)">Didu 💫</span></h1>
+<h2>Hey Didu 💛</h2>
 <button onclick="next(1)">Start</button>
 </div>
 
@@ -189,10 +122,7 @@ setTimeout(()=>p.remove(),8000);
 <div id="s3" class="slide hidden">
 <p>I’m here 🤍</p>
 <button onclick="playVoice()">Hear me 🎧</button>
-<div id="voiceName">Didu 🤍</div>
-<button onclick="openHug()">Hug 🤗</button>
 <button onclick="next(3)">Next</button>
-<div onclick="secret()" style="opacity:0.2">miss me?</div>
 </div>
 
 <!-- CHAT -->
@@ -207,19 +137,6 @@ setTimeout(()=>p.remove(),8000);
 <p id="score">0</p>
 </div>
 
-<!-- HUG -->
-<div id="hug" class="slide hidden">
-<h2>🤗</h2>
-<p>You’re safe… I’m holding you 🤍</p>
-<button onclick="back()">Back</button>
-</div>
-
-<!-- POPUP -->
-<div id="popup" class="popup">
-I miss you 🤍<br><br>
-<button onclick="closePop()">Close</button>
-</div>
-
 <script>
 function next(n){
 document.getElementById("s"+n).classList.add("hidden");
@@ -231,29 +148,26 @@ document.getElementById("s"+(n+1)).classList.remove("hidden");
 }
 }
 
-function glow(e){e.classList.toggle("glow")}
-
-/* voice */
+/* 🔥 FIXED AUDIO */
 function playVoice(){
-voice.play();
-voiceName.classList.add("show");
+let audio=document.getElementById("voice");
+
+audio.pause();
+audio.currentTime=0;
+
+let p=audio.play();
+if(p!==undefined){
+p.catch(()=>alert("Tap again to play 🎧"));
+}
+
 document.body.classList.add("blur-bg");
 focusOverlay.classList.add("active");
 
-voice.onended=()=>{
-voiceName.classList.remove("show");
+audio.onended=()=>{
 document.body.classList.remove("blur-bg");
 focusOverlay.classList.remove("active");
+};
 }
-}
-
-/* hug */
-function openHug(){s3.classList.add("hidden");hug.classList.remove("hidden")}
-function back(){hug.classList.add("hidden");s3.classList.remove("hidden")}
-
-/* popup */
-function secret(){popup.style.display="block"}
-function closePop(){popup.style.display="none"}
 
 /* chat */
 let flow=[
@@ -286,12 +200,11 @@ i++;setTimeout(step,1000);
 });
 }
 
-function add(text,type){
+function add(t,type){
 let d=document.createElement("div");
 d.className="msg "+type;
-d.innerText=text;
+d.innerText=t;
 chatBox.appendChild(d);
-chatBox.scrollTop=chatBox.scrollHeight;
 }
 
 function options(arr){
@@ -311,7 +224,7 @@ add(choice,"her");
 
 typing(()=>{
 add("I’m here 🤍","me");
-add("You matter more 💛","me");
+add("You matter 💛","me");
 add("Always with you 🤍","me");
 });
 }
