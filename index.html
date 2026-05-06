@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Didu 💛</title>
+
+<style>
+body{
+margin:0;
+font-family:'Segoe UI',sans-serif;
+overflow:hidden;
+background:linear-gradient(135deg,#fbeaff,#e6f0ff);
+}
+
+.slide{
+position:absolute;
+width:100%;
+height:100vh;
+display:flex;
+flex-direction:column;
+justify-content:center;
+align-items:center;
+transition:0.7s;
+}
+.hidden{opacity:0;pointer-events:none}
+
+.name{
+font-size:28px;
+color:#caa6ff;
+cursor:pointer;
+}
+.name.glow{
+text-shadow:0 0 15px #ffb3ec,0 0 30px #caa6ff;
+transform:scale(1.1);
+}
+
+button{
+padding:10px 18px;
+border:none;
+border-radius:20px;
+background:#caa6ff;
+color:#fff;
+margin:6px;
+cursor:pointer;
+}
+
+.voiceBtn.playing{
+box-shadow:0 0 20px #caa6ff;
+}
+
+#voiceName{
+margin-top:15px;
+font-size:18px;
+color:#caa6ff;
+opacity:0;
+transition:1s;
+}
+#voiceName.show{
+opacity:1;
+text-shadow:0 0 15px #ffb3ec,0 0 25px #caa6ff;
+transform:scale(1.1);
+}
+
+.breath{
+width:90px;height:90px;border-radius:50%;
+background:#caa6ff;
+animation:breathe 5s infinite;
+}
+@keyframes breathe{
+0%{transform:scale(1)}
+50%{transform:scale(1.6)}
+100%{transform:scale(1)}
+}
+
+#chatBox{
+width:90%;max-width:360px;height:60vh;
+background:#ffffffcc;
+border-radius:20px;
+padding:12px;
+overflow-y:auto;
+display:flex;
+flex-direction:column;
+gap:8px;
+}
+
+.msg{
+padding:10px 14px;
+border-radius:18px;
+max-width:75%;
+font-size:14px;
+}
+.me{background:#caa6ff;color:#fff;align-self:flex-end}
+.her{background:#eee;color:#333;align-self:flex-start;font-style:italic}
+
+.heart{
+position:absolute;
+font-size:20px;
+cursor:pointer;
+animation:float 6s linear infinite;
+}
+@keyframes float{
+0%{transform:translateY(100vh)}
+100%{transform:translateY(-10vh)}
+}
+
+.secret{
+position:absolute;
+bottom:10px;
+right:12px;
+opacity:0.2;
+font-size:12px;
+cursor:pointer;
+}
+
+.popup{
+position:absolute;
+background:#fff;
+padding:20px;
+border-radius:15px;
+display:none;
+text-align:center;
+}
+
+.hug{
+font-size:20px;
+text-align:center;
+}
+</style>
+</head>
+
+<body>
+
+<audio id="music" loop>
+<source src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_c8d4d7b8f3.mp3">
+</audio>
+
+<audio id="voice">
+<source src="ayush.mp3">
+</audio>
+
+<!-- SLIDE 1 -->
+<div id="s1" class="slide">
+<h1>Hey <span class="name" onclick="glow(this)">Didu 💫</span></h1>
+<p>Tap your name ✨</p>
+<button onclick="next(1)">Start 🌙</button>
+</div>
+
+<!-- SLIDE 2 -->
+<div id="s2" class="slide hidden">
+<div class="breath"></div>
+<p>Breathe slowly… you’re safe 🤍</p>
+<button onclick="next(2)">Continue →</button>
+</div>
+
+<!-- SLIDE 3 -->
+<div id="s3" class="slide hidden">
+<p>You don’t have to rush… I’m here 🤍</p>
+<button class="voiceBtn" onclick="playVoice(this)">Hear me 🎧</button>
+
+<!-- name appears with voice -->
+<div id="voiceName">Didu 🤍</div>
+
+<button onclick="openHug()">Need a hug 🤗</button>
+<button onclick="next(3)">Continue →</button>
+<div class="secret" onclick="secret()">miss me?</div>
+</div>
+
+<!-- CHAT -->
+<div id="chat" class="slide hidden">
+<div id="chatBox"></div>
+<button onclick="goGame()">Continue →</button>
+</div>
+
+<!-- GAME -->
+<div id="game" class="slide hidden">
+<h2>Tap hearts 💛</h2>
+<p id="score">0</p>
+<button onclick="restart()">Restart</button>
+</div>
+
+<!-- HUG -->
+<div id="hug" class="slide hidden">
+<div class="hug">
+Close your eyes… 🤗<br><br>
+You’re safe here…<br>
+Ayush is holding you 🤍
+</div>
+<button onclick="back()">Back</button>
+</div>
+
+<!-- SECRET POPUP -->
+<div id="popup" class="popup">
+Of course I miss you… 🤍<br><br>
+I’m always right here 💛<br><br>
+<button onclick="closePop()">Close</button>
+</div>
+
+<script>
+function next(n){
+document.getElementById("s"+n).classList.add("hidden");
+
+if(n==3){
+document.getElementById("chat").classList.remove("hidden");
+startChat();
+}else{
+document.getElementById("s"+(n+1)).classList.remove("hidden");
+}
+
+music.play();
+}
+
+function glow(el){el.classList.toggle("glow")}
+
+function playVoice(btn){
+voice.play();
+btn.classList.add("playing");
+
+let name=document.getElementById("voiceName");
+name.classList.add("show");
+
+voice.onended=()=>{
+btn.classList.remove("playing");
+name.classList.remove("show");
+}
+}
+
+function openHug(){
+s3.classList.add("hidden");
+hug.classList.remove("hidden");
+}
+function back(){
+hug.classList.add("hidden");
+s3.classList.remove("hidden");
+}
+
+function secret(){popup.style.display="block"}
+function closePop(){popup.style.display="none"}
+
+/* CHAT SYSTEM */
+let flow=[
+["Hey didu 🤍","me"],
+["Feeling overwhelmed?","me","opt"]
+];
+let i=0;
+
+function typing(cb){
+let t=document.createElement("div");
+t.className="msg her";
+t.innerText="typing...";
+chatBox.appendChild(t);
+setTimeout(()=>{t.remove();cb()},1200);
+}
+
+function startChat(){step()}
+
+function step(){
+if(i>=flow.length)return;
+
+typing(()=>{
+let f=flow[i];
+add(f[0],f[1]);
+
+if(f[2]=="opt"){
+options(["Yeah","Not sure","I'm okay"]);
+}else{
+i++;setTimeout(step,1000);
+}
+});
+}
+
+function add(text,type){
+let d=document.createElement("div");
+d.className="msg "+type;
+d.innerText=text;
+chatBox.appendChild(d);
+chatBox.scrollTop=chatBox.scrollHeight;
+}
+
+function options(arr){
+let div=document.createElement("div");
+
+arr.forEach(o=>{
+let b=document.createElement("button");
+b.innerText=o;
+b.onclick=()=>reply(o,div);
+div.appendChild(b);
+});
+
+chatBox.appendChild(div);
+}
+
+function reply(choice,div){
+div.remove();
+add(choice,"her");
+
+typing(()=>{
+add("I’m here… relax 🤍","me");
+add("Notifications can wait…","me");
+add("You matter more 💛","me");
+add("I’m always with you 🤍","me");
+});
+}
+
+/* GAME */
+let score=0;
+function goGame(){
+chat.classList.add("hidden");
+game.classList.remove("hidden");
+
+setInterval(()=>{
+let h=document.createElement("div");
+h.className="heart";
+h.innerHTML="🤍";
+h.style.left=Math.random()*100+"vw";
+
+h.onclick=()=>{
+score++;
+document.getElementById("score").innerText=score;
+h.remove();
+};
+
+document.body.appendChild(h);
+setTimeout(()=>h.remove(),5000);
+},700);
+}
+
+function restart(){location.reload()}
+</script>
+
+</body>
+  </html>
